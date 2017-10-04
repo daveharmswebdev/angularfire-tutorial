@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 
 import { CompanyService } from '../company.service';
-import { Company } from '../../Company';
+import { Company } from '../Company';
 
 import {Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -14,7 +14,7 @@ import 'rxjs/add/observable/of';
   styleUrls: ['./company-edit.component.css']
 })
 export class CompanyEditComponent implements OnInit {
-  company$: FirebaseObjectObservable<any>;
+  company$: FirebaseObjectObservable<Company> | any;
   companyKey: string;
   isNewCompany: boolean;
 

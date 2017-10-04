@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/catch';
 
-import { Company } from '../company';
+import { Company } from './company';
 
 
 
@@ -25,12 +25,13 @@ export class CompanyService {
 
   getCompany(key: string) {
     console.log(key);
-    return this.db.object(`companies/${key}`);
+    return this.db.object(`companies/${key}`)
+      .catch(this.errorHandler);
   }
 
   getCompanies() {
-    return this.companies$;
-      // .catch(this.errorHandler);
+    return this.companies$
+      .catch(this.errorHandler);
   }
 
   saveCompany(company) {
@@ -51,8 +52,8 @@ export class CompanyService {
       .catch(error => console.log(error));
   }
 
-  private errorHandler(error): void {
+  private errorHandler(error) {
     console.log(error);
-    // return Observable.throw(error);
+    return Observable.throw(error);
   }
 }
