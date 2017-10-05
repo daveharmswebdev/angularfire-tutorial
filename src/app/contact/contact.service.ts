@@ -7,7 +7,10 @@ import {
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
+import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
 
 import { Contact } from './contact';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -27,17 +30,26 @@ export class ContactService {
 
   getContact(key: string) {
     console.log(key);
-    return this.db.object(`contacts/${key}`);
+    return this.db.object(`contacts/${key}`)
+    .catch(this.errorHandler);
   }
 
   getContacts() {
-    return this.db.list(`contacts`, {
-      query: {
-        orderByChild: 'companyKey',
-        equalTo: this.subject$
-      }
-    });
-    // .catch(this.errorHandler);
+    return this.subject$
+      .switchMap(companyKey => companyKey === undefined
+      ? this.contacts$
+      : this.db.list(`companyContacts/${companyKey}`))
+     .catch(this.errorHandler);
+  }
+
+  companyContactsJoin(companyKey) {
+    return this.db.list(`companyContacts/${companyKey}`)
+      .map(contactKeys => contactKeys
+        .map(contact => this.db.object(`contacts/${contact.$key}`)))
+      .switchMap(contactObsArray => contactObsArray.length >= 1
+        ? Observable.combineLatest(contactObsArray)
+        : Observable.of([]))
+      .catch(this.errorHandler);
   }
 
   saveContact(contact) {
@@ -47,11 +59,11 @@ export class ContactService {
   }
 
   editContact(contact: Contact) {
-    let updateContact = {};
+    const updateContact = {};
 
     updateContact[`contacts/${contact.$key}`] = contact;
     Object.keys(contact.contactCompanies).forEach(companyKey => {
-      updateContact[`companyContacts/${companyKey}/${contact.$key}`] = true;
+      updateContact[`companyContacts/${companyKey}/${contact.$key}`] = {name: contact.name};
     });
     return this.db.object('/').update(updateContact)
       .then(_ => console.log('success'))
@@ -59,7 +71,7 @@ export class ContactService {
   }
 
   removeContact(contact: Contact) {
-    let removeContact = {};
+    const removeContact = {};
 
     removeContact[`contacts/${contact.$key}`] = null;
     Object.keys(contact.contactCompanies).forEach(companyKey => {
@@ -71,8 +83,8 @@ export class ContactService {
       .catch(error => console.log(error));
   }
 
-  // private errorHandler(error) {
-  //   console.log(error);
-  //   return Observable.throw(error);
-  // }
+  private errorHandler(error) {
+    console.log(error);
+    return Observable.throw(error);
+  }
 }

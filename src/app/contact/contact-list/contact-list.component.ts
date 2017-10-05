@@ -14,7 +14,7 @@ import { Company } from '../../company/company';
 })
 export class ContactListComponent implements OnInit {
   companies$: Observable<Company[]>;
-  contacts$: FirebaseListObservable<Contact[]>;
+  contacts$: FirebaseListObservable<Contact[]> | Observable<Error>;
 
   constructor(
     private companyService: CompanyService,
