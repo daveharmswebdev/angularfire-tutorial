@@ -1,21 +1,25 @@
 <h1>Contact Edit</h1>
 <md-card>
-    <md-input-container>
-        <input type="text" mdInput [(ngModel)]="contact.name">
-    </md-input-container>
-    <div *ngIf="!isNewContact">
-      <md-select placeholder="company" [(ngModel)]="selectedCompany">
-        <md-option *ngFor="let company of companies$ | async" [value]="company">
-          {{company.name}}
-        </md-option>
-      </md-select>
-      <button md-raised-button (click)="addCompany()">Add Company</button>
-      <md-list>
-        <md-list-item *ngFor="let company of contactCompanies">{{company.name}}</md-list-item>
-      </md-list>
-    </div>
-    <md-card-actions align="right">
-        <button md-button (click)="saveContact(contact)">Save</button>
-        <button *ngIf="!isNewContact" md-button (click)="removeContact(contact)">Remove</button>
-    </md-card-actions>
+  <div>
+    <img *ngIf="contact.imageUrl" [src]="contact.imageUrl" alt="contact iamge profile">
+    <input type="file" *ngIf="!isNewContact" (change)="uploadImage($event)">
+  </div>
+  <md-input-container>
+      <input type="text" mdInput [(ngModel)]="contact.name">
+  </md-input-container>
+  <div *ngIf="!isNewContact">
+    <md-select placeholder="company" [(ngModel)]="selectedCompany">
+      <md-option *ngFor="let company of companies$ | async" [value]="company">
+        {{company.name}}
+      </md-option>
+    </md-select>
+    <button md-raised-button (click)="addCompany()">Add Company</button>
+    <md-list>
+      <md-list-item *ngFor="let company of contactCompanies">{{company.name}}</md-list-item>
+    </md-list>
+  </div>
+  <md-card-actions align="right">
+      <button md-button (click)="saveContact(contact)">Save</button>
+      <button *ngIf="!isNewContact" md-button (click)="removeContact(contact)">Remove</button>
+  </md-card-actions>
 </md-card>

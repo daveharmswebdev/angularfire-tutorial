@@ -3,4 +3,5 @@ export interface Contact {
   name: string;
   phone: string;
   contactCompanies: {[key: string]: {name: string}};
+  imageUrl?: string;
 }

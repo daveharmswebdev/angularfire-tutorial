@@ -1,4 +1,5 @@
 import 'hammerjs';
+import 'firebase/storage';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -23,7 +24,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CompanyEditComponent } from './company/company-edit/company-edit.component';
 import { CompanyService } from './company/company.service';
 import { CompanyListComponent } from './company/company-list/company-list.component';
-import { AuthService } from './auth.service';
+import { AuthService } from './auth/auth.service';
+import { AuthGuard } from './auth/auth.guard';
 import { ContactService } from './contact/contact.service';
 import { ContactListComponent } from './contact/contact-list/contact-list.component';
 import { ContactEditComponent } from './contact/contact-edit/contact-edit.component';
@@ -58,7 +60,8 @@ import { HomeComponent } from './home/home.component';
   providers: [
     CompanyService,
     ContactService,
-    AuthService
+    AuthService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

@@ -1,3 +1,4 @@
+import * as firebase from 'firebase/app';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
@@ -37,6 +38,13 @@ export class ContactEditComponent implements OnInit {
     this.isNewContact = this.contactKey === 'new';
     console.log(!this.isNewContact);
     if (!this.isNewContact) { this.getContact(); }
+  }
+
+  uploadImage(event: any) {
+    const file = event.srcElement.files[0];
+    const storageRef = firebase.storage().ref(`contacts/${this.contactKey}`);
+    storageRef.put(file)
+      .then(uploadTask => this.contact.imageUrl = uploadTask.downloadURL);
   }
 
   getContact() {
